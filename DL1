@@ -1,0 +1,35 @@
+import tensorflow as tf
+mnist = tf.keras.datasets.mnist
+
+(xtr,ytr),(xtest,ytest)= mnist.load_data()
+xtr=tf.keras.utils.normalize(xtr,axis=1)
+xtest=tf.keras.utils.normalize(xtest,axis=1)
+
+model= tf.keras.models.Sequential()
+model.add(tf.keras.layers.Flatten())
+model.add(tf.keras.layers.Dense(128,activation=tf.nn.relu))
+model.add(tf.keras.layers.Dense(128,activation=tf.nn.relu))
+model.add(tf.keras.layers.Dense(10,activation=tf.nn.softmax))
+
+model.compile(optimizer="adam",loss="sparse_categorical_crossentropy",metrics=["accuracy"])
+
+model.fit(xtr,ytr,epochs=3)
+
+#testing
+vloss,vacc=model.evaluate(xtest,ytest)
+print(vloss,vacc)
+
+#prediction
+prediction=model.predict(xtest)
+
+import numpy as np
+d=np.argmax(prediction[0])
+print(d)
+
+%matplotlib inline
+import matplotlib
+import matplotlib.pyplot as plt
+plt.imshow(xtest[0])
+plt.show()
+
+model.save('hand_numeric_reader_dense.model')
